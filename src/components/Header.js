@@ -66,7 +66,7 @@ const Header = () =>{
         <GenresList>
             {genres.map((item,index) => (
                 <li key={index}>
-                    <Link to={``}>{item.name}</Link>
+                    <Link to={`/genres/${item.id}`}>{item.name}</Link>
                 </li>
             ))}
         </GenresList>

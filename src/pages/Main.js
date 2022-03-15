@@ -57,7 +57,7 @@ const Main = () =>{
     //영화목록
     const [movies, setMovies] = useState([]);
     //페이지 번호
-    const [page,setPage]=useState(0);
+    const [page,setPage]=useState(1);
     //전체 페이지 카운트
     const [totalPages,setTotalPage]=useState(0);
     //전체 게시물 카운트
@@ -66,11 +66,15 @@ const Main = () =>{
     //input change
     const searchAction = (e) =>{
         setSearchText(e.target.value);
+        setMovies([]);
+        setPage(1);
+        //fetchData(`search/movie?query=${searchText}&page=${page}`);
     }
 
     //data fetch
-    const fetchData = () =>{
-        instance.get(`movie/popular?page=${page+1}`)
+    const fetchData = (queryString) =>{
+        console.log(queryString)
+        instance.get(queryString)
         .then((res)=>{
             console.log(res.data.results);
             setPage(res.data.page);
@@ -79,17 +83,30 @@ const Main = () =>{
             setMovies([...movies, ...res.data.results]);
         })
     }
+
+
     //더보기
     const loadMore=()=>{
         console.log('more')
-        fetchData();
+        if(searchText ===''){
+            fetchData(`movie/popular?page=${page+1}`);
+        } else {
+            // 검색
+            fetchData(`search/movie?query=${searchText}&page=${page+1}`);
+        }
 
     }
 
 
     useEffect(()=>{
-        fetchData();
-    },[]);
+        //인기영화 목록
+        if(searchText ===''){
+            fetchData(`movie/popular?page=${page}`);
+        } else {
+            // 검색
+            fetchData(`search/movie?query=${searchText}&page=${page}`);
+        }
+    },[searchText]);
 
     return <>
           <div>
